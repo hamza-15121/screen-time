@@ -11,7 +11,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Screen Time" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="stylesheet" href="/styles.css?v=20260323-2" />
+  <link rel="stylesheet" href="/styles.css?v=20260323-6" />
   <title>Screen Time | Block Distractions, Block Adult Content, Study Focus</title>
   <script type="application/ld+json">
     {
@@ -39,6 +39,8 @@
         <p class="hero-note">Block noise. Regain joy. Study and live with intention.</p>
       </div>
       <div class="top-actions">
+        <button id="topSignInBtn" class="ghost">Sign in</button>
+        <button id="topSignUpBtn" class="ghost">Sign up</button>
         <button id="manageBillingTopBtn" class="ghost hidden">Manage Billing</button>
         <button id="manageAccountTopBtn" class="ghost hidden">Manage Account</button>
         <button id="logoutBtn" class="ghost hidden">Log out</button>
@@ -122,25 +124,71 @@
         </div>
       </section>
 
+      <section class="landing-section section-porn-blocker">
+        <div class="porn-blocker-copy">
+          <h3>Non-Bypassable Porn Blocker</h3>
+          <p>Use a guided lock route to <strong>Block Adult Content</strong> with high-friction setup, strict restrictions, and timer-bound passcode reveal. This mode is built for relapse prevention, not casual filtering.</p>
+          <ul class="porn-list">
+            <li>Applies Screen Time restriction pathways step by step</li>
+            <li>Supports No Surf behavior with deliberate lock windows</li>
+            <li>Reduces quick bypass patterns during urge spikes</li>
+          </ul>
+        </div>
+        <div class="landing-art porn-blocker-art" aria-hidden="true">
+          <svg viewBox="0 0 360 250" role="img">
+            <defs>
+              <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0f766e"/>
+                <stop offset="100%" stop-color="#0b5f58"/>
+              </linearGradient>
+              <linearGradient id="warnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f97316"/>
+                <stop offset="100%" stop-color="#dc2626"/>
+              </linearGradient>
+            </defs>
+            <rect x="20" y="18" width="320" height="214" rx="24" fill="#f7fffb" stroke="#bbd7cb" stroke-width="2"/>
+            <path d="M180 44 L254 74 L242 148 C238 178 216 202 180 214 C144 202 122 178 118 148 L106 74 Z" fill="url(#shieldGrad)"/>
+            <circle cx="180" cy="128" r="30" fill="#ecfeff"/>
+            <rect x="168" y="116" width="24" height="28" rx="4" fill="#0f172a"/>
+            <rect x="172" y="104" width="16" height="16" rx="8" fill="none" stroke="#0f172a" stroke-width="4"/>
+            <circle cx="180" cy="128" r="4" fill="#ecfeff"/>
+            <path d="M72 84 C92 58 132 58 152 84" stroke="url(#warnGrad)" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <path d="M208 84 C228 58 268 58 288 84" stroke="url(#warnGrad)" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <circle cx="112" cy="86" r="14" fill="#fff7ed" stroke="#f59e0b" stroke-width="3"/>
+            <line x1="104" y1="86" x2="120" y2="86" stroke="#dc2626" stroke-width="3"/>
+            <circle cx="248" cy="86" r="14" fill="#fff7ed" stroke="#f59e0b" stroke-width="3"/>
+            <line x1="240" y1="86" x2="256" y2="86" stroke="#dc2626" stroke-width="3"/>
+            <rect x="76" y="170" width="208" height="28" rx="14" fill="#fff7ed" stroke="#f4b37c" stroke-width="2"/>
+            <text x="180" y="189" text-anchor="middle" font-size="14" font-family="Unbounded, sans-serif" fill="#8c2f23">BLOCK ADULT CONTENT</text>
+          </svg>
+        </div>
+      </section>
+
       <section class="landing-section section-story">
         <div>
           <h3>Block Distractions. Lock Apps. Regain Happiness.</h3>
           <p>Use Screen Time to reduce compulsive scrolling and build calmer days with better mood, deeper study sessions, and stronger in-person relationships.</p>
         </div>
-        <div class="landing-art story-art" aria-hidden="true">
-          <svg viewBox="0 0 360 220" role="img">
-            <rect x="22" y="36" width="100" height="152" rx="20" fill="#0f766e"/>
-            <rect x="36" y="52" width="72" height="116" rx="12" fill="#ecfeff"/>
-            <circle cx="72" cy="112" r="23" fill="#fbbf24"/>
-            <path d="M60 116 Q72 127 84 116" stroke="#111827" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-            <circle cx="64" cy="104" r="3.2" fill="#111827"/>
-            <circle cx="80" cy="104" r="3.2" fill="#111827"/>
-            <rect x="150" y="20" width="188" height="180" rx="26" fill="#fff7ed" stroke="#f4b37c" stroke-width="2"/>
-            <text x="170" y="70" font-size="18" font-family="Unbounded, sans-serif" fill="#8c2f23">Happier Focus</text>
-            <text x="170" y="102" font-size="14" font-family="Literata, serif" fill="#374151">Study with No Distractions</text>
-            <text x="170" y="126" font-size="14" font-family="Literata, serif" fill="#374151">Block Adult Content</text>
-            <text x="170" y="150" font-size="14" font-family="Literata, serif" fill="#374151">Regain your life rhythm</text>
-          </svg>
+        <div class="story-slab" aria-hidden="true">
+          <div class="study-figure">
+            <svg viewBox="0 0 180 170" role="img">
+              <rect x="16" y="114" width="148" height="16" rx="8" fill="#e8a36b"/>
+              <rect x="44" y="58" width="92" height="56" rx="10" fill="#fff6df" stroke="#e8a36b" stroke-width="2"/>
+              <circle cx="88" cy="64" r="18" fill="#f8c257"/>
+              <rect x="70" y="84" width="36" height="28" rx="10" fill="#0f766e"/>
+              <rect x="58" y="88" width="14" height="8" rx="4" fill="#0f766e"/>
+              <rect x="106" y="88" width="14" height="8" rx="4" fill="#0f766e"/>
+              <rect x="28" y="96" width="34" height="20" rx="4" fill="#f97316"/>
+              <line x1="34" y1="102" x2="56" y2="102" stroke="#fff7ed" stroke-width="3" stroke-linecap="round"/>
+              <line x1="34" y1="109" x2="50" y2="109" stroke="#fff7ed" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="study-list">
+            <h4>Happier Focus</h4>
+            <p>Study with No Distractions</p>
+            <p>Block Adult Content</p>
+            <p>Regain your life rhythm</p>
+          </div>
         </div>
       </section>
 
@@ -193,55 +241,99 @@
       </section>
 
       <section class="landing-section section-keywords">
-        <div class="usecase-head">
+        <div class="usecase-header">
           <div>
             <h3>Use Cases</h3>
-            <p class="subtle">Pick the flow that matches your goal. Each use case is built for practical daily execution, not theory.</p>
+            <p class="subtle">Choose the exact mode you need. These workflows are built for real routines, high-friction lock behavior, and long-term consistency.</p>
           </div>
-          <div class="usecase-head-art" aria-hidden="true">
-            <svg viewBox="0 0 220 90">
-              <rect x="8" y="20" width="64" height="54" rx="12" fill="#0f766e"/>
-              <rect x="20" y="30" width="40" height="34" rx="8" fill="#ecfeff"/>
-              <rect x="86" y="12" width="56" height="62" rx="14" fill="#f97316"/>
-              <rect x="98" y="24" width="30" height="8" rx="4" fill="#fff7ed"/>
-              <rect x="98" y="38" width="22" height="8" rx="4" fill="#fff7ed"/>
-              <rect x="154" y="18" width="58" height="50" rx="12" fill="#1f9b72"/>
-              <circle cx="183" cy="43" r="13" fill="#fde047"/>
+          <div class="usecase-mini-art" aria-hidden="true">
+            <svg viewBox="0 0 180 120" role="img">
+              <rect x="14" y="88" width="152" height="16" rx="8" fill="#e7a067"/>
+              <circle cx="64" cy="46" r="14" fill="#f8c257"/>
+              <rect x="50" y="58" width="28" height="24" rx="10" fill="#0f766e"/>
+              <rect x="38" y="62" width="12" height="7" rx="3" fill="#0f766e"/>
+              <rect x="78" y="62" width="12" height="7" rx="3" fill="#0f766e"/>
+              <rect x="102" y="44" width="48" height="36" rx="8" fill="#fff5e8" stroke="#e8a36b" stroke-width="2"/>
+              <line x1="110" y1="56" x2="142" y2="56" stroke="#0f172a" stroke-width="3"/>
+              <line x1="110" y1="66" x2="136" y2="66" stroke="#0f172a" stroke-width="3"/>
             </svg>
           </div>
         </div>
-        <div class="usecase-grid">
-          <article class="usecase-card">
-            <svg viewBox="0 0 120 72" aria-hidden="true">
-              <rect x="8" y="8" width="48" height="56" rx="10" fill="#0f766e"/>
-              <rect x="16" y="16" width="32" height="40" rx="7" fill="#ecfeff"/>
-              <circle cx="34" cy="36" r="9" fill="#facc15"/>
-              <path d="M28 39 Q34 44 40 39" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <rect x="68" y="14" width="44" height="10" rx="5" fill="#f97316"/>
-              <rect x="68" y="30" width="36" height="10" rx="5" fill="#fb923c"/>
-              <rect x="68" y="46" width="28" height="10" rx="5" fill="#fdba74"/>
-            </svg>
-            <h4>Study Focus</h4>
-            <p>Screen Time for Students and deep work routines with fewer interruptions.</p>
+        <div class="usecase-text-grid">
+          <article class="usecase-text-card">
+            <div class="usecase-card-head">
+              <p class="usecase-label">Mode 01</p>
+              <h4>Screen Time for Students</h4>
+            </div>
+            <div class="usecase-card-body">
+              <p>Use Study with No Distractions sessions to block social apps, silence doom-scroll loops, and keep revision windows clean.</p>
+              <div class="usecase-spot" aria-hidden="true">
+                <svg viewBox="0 0 120 84" role="img">
+                  <rect x="6" y="62" width="108" height="14" rx="7" fill="#dd9559"/>
+                  <circle cx="44" cy="28" r="10" fill="#f8c257"/>
+                  <rect x="34" y="38" width="20" height="16" rx="7" fill="#0f766e"/>
+                  <rect x="24" y="42" width="10" height="5" rx="2.5" fill="#0f766e"/>
+                  <rect x="54" y="42" width="10" height="5" rx="2.5" fill="#0f766e"/>
+                  <rect x="70" y="30" width="34" height="24" rx="5" fill="#fff8ee" stroke="#dd9559" stroke-width="2"/>
+                  <line x1="76" y1="38" x2="98" y2="38" stroke="#0f172a" stroke-width="2.8"/>
+                  <line x1="76" y1="45" x2="94" y2="45" stroke="#0f172a" stroke-width="2.8"/>
+                </svg>
+              </div>
+            </div>
           </article>
-          <article class="usecase-card">
-            <svg viewBox="0 0 120 72" aria-hidden="true">
-              <rect x="10" y="12" width="100" height="48" rx="12" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
-              <path d="M32 48 L60 24 L88 48" stroke="#ef4444" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <circle cx="60" cy="50" r="8" fill="#0f766e"/>
-            </svg>
-            <h4>Adult Content Block</h4>
-            <p>Block Adult Content with stricter web and account pathways to reduce relapse triggers.</p>
+          <article class="usecase-text-card">
+            <div class="usecase-card-head">
+              <p class="usecase-label">Mode 02</p>
+              <h4>Unbypassable Screen Lock</h4>
+            </div>
+            <div class="usecase-card-body">
+              <p>Run strict lock pathways with forced setup confirmations so your app limits, web controls, and restrictions stay intentional.</p>
+              <div class="usecase-spot" aria-hidden="true">
+                <svg viewBox="0 0 120 84" role="img">
+                  <path d="M60 10 L94 26 L88 58 C85 72 74 80 60 84 C46 80 35 72 32 58 L26 26 Z" fill="#0f766e"/>
+                  <rect x="47" y="40" width="26" height="20" rx="4" fill="#0f172a"/>
+                  <rect x="51" y="30" width="18" height="13" rx="7" fill="none" stroke="#0f172a" stroke-width="4"/>
+                  <circle cx="60" cy="50" r="3" fill="#ecfeff"/>
+                </svg>
+              </div>
+            </div>
           </article>
-          <article class="usecase-card">
-            <svg viewBox="0 0 120 72" aria-hidden="true">
-              <rect x="12" y="10" width="42" height="52" rx="10" fill="#ef4444"/>
-              <rect x="66" y="10" width="42" height="52" rx="10" fill="#0f766e"/>
-              <rect x="26" y="24" width="14" height="24" rx="2" fill="#fff"/>
-              <rect x="80" y="24" width="14" height="24" rx="2" fill="#fff"/>
-            </svg>
-            <h4>Distraction Lock</h4>
-            <p>Lock Apps, Block App categories, and run No Surf windows during critical hours.</p>
+          <article class="usecase-text-card">
+            <div class="usecase-card-head">
+              <p class="usecase-label">Mode 03</p>
+              <h4>Block Adult Content</h4>
+            </div>
+            <div class="usecase-card-body">
+              <p>Configure content restrictions for relapse protection while keeping your reset process structured and time-bound.</p>
+              <div class="usecase-spot" aria-hidden="true">
+                <svg viewBox="0 0 120 84" role="img">
+                  <rect x="8" y="22" width="104" height="48" rx="10" fill="#fff8ee" stroke="#dd9559" stroke-width="2"/>
+                  <path d="M34 56 L60 34 L86 56" stroke="#dc2626" stroke-width="6" stroke-linecap="round" fill="none"/>
+                  <circle cx="60" cy="58" r="8" fill="#0f766e"/>
+                  <line x1="53" y1="58" x2="67" y2="58" stroke="#fff" stroke-width="2.2"/>
+                </svg>
+              </div>
+            </div>
+          </article>
+          <article class="usecase-text-card">
+            <div class="usecase-card-head">
+              <p class="usecase-label">Mode 04</p>
+              <h4>Block Distractions + Lock Apps</h4>
+            </div>
+            <div class="usecase-card-body">
+              <p>Use App Locker style plans to block app categories, run No Surf blocks, and preserve deep work energy during key hours.</p>
+              <div class="usecase-spot" aria-hidden="true">
+                <svg viewBox="0 0 120 84" role="img">
+                  <rect x="14" y="16" width="38" height="52" rx="9" fill="#f59e0b"/>
+                  <rect x="68" y="16" width="38" height="52" rx="9" fill="#0f766e"/>
+                  <circle cx="33" cy="42" r="9" fill="#fff9ed"/>
+                  <rect x="28" y="39" width="10" height="7" rx="2" fill="#f59e0b"/>
+                  <rect x="31" y="35" width="4" height="5" rx="1.5" fill="#f59e0b"/>
+                  <circle cx="87" cy="42" r="9" fill="#ecfeff"/>
+                  <line x1="82" y1="42" x2="92" y2="42" stroke="#0f172a" stroke-width="2"/>
+                </svg>
+              </div>
+            </div>
           </article>
         </div>
         <div class="keyword-ribbon">
@@ -251,8 +343,45 @@
           <span>Block Adult Content</span>
           <span>Study with No Distractions</span>
           <span>Block Distractions</span>
+          <span>Block App</span>
           <span>App Locker</span>
           <span>No Surf</span>
+        </div>
+      </section>
+
+      <section class="landing-section section-pricing">
+        <div class="pricing-head">
+          <h3>Simple Pricing With 3-Day Free Trial</h3>
+          <p class="subtle">Start free for 3 days. Then continue on the plan that fits your routine. Add unlimited devices on both plans.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="pricing-card featured">
+            <p class="pricing-tag">Most Popular</p>
+            <h4>Monthly Plan</h4>
+            <p class="price">$4.99<span>/month</span></p>
+            <p class="trial">Includes a 3-day free trial</p>
+            <ul>
+              <li>Unlimited devices</li>
+              <li>Guided lock setup + passcode workflow</li>
+              <li>Dashboard for active blocks and timers</li>
+            </ul>
+            <button id="pricingMonthlyBtn">Start 3-Day Free Trial</button>
+          </article>
+          <article class="pricing-card">
+            <p class="pricing-tag alt">Best Value</p>
+            <h4>Yearly Plan</h4>
+            <p class="price">$39.99<span>/year</span></p>
+            <p class="trial">Includes a 3-day free trial</p>
+            <ul>
+              <li>Everything in Monthly</li>
+              <li>Lower effective monthly cost</li>
+              <li>Built for long-term discipline</li>
+            </ul>
+            <button id="pricingYearlyBtn" class="ghost">Start 3-Day Free Trial</button>
+          </article>
+        </div>
+        <div class="pricing-cta">
+          <button id="getStartedBtn">Get Started</button>
         </div>
       </section>
 
@@ -261,6 +390,36 @@
         <p class="subtle">Create your account to begin guided setup and timer-protected passcode reveal.</p>
         <div id="clerkAuth" class="stack"></div>
         <p id="authMsg" class="msg"></p>
+      </section>
+
+      <section class="landing-section section-faq">
+        <h3>FAQ</h3>
+        <div class="faq-grid">
+          <details>
+            <summary>Is this really an unbypassable screen lock?</summary>
+            <p>It is designed as a high-friction lock workflow with strict setup steps, but no web app can guarantee universal bypass-proof behavior on every Apple state/version.</p>
+          </details>
+          <details>
+            <summary>How does the porn blocker mode work?</summary>
+            <p>It guides you through Apple Screen Time content restriction pathways and passcode flow to Block Adult Content with timer-based reveal controls.</p>
+          </details>
+          <details>
+            <summary>Can I use this for studying and distraction control only?</summary>
+            <p>Yes. You can choose Study Focus or Screen Time Control tracks and configure either full blockout or selective app/category limits.</p>
+          </details>
+          <details>
+            <summary>How many devices can I add?</summary>
+            <p>Unlimited devices are included in both Monthly and Yearly plans.</p>
+          </details>
+          <details>
+            <summary>Do you offer a free trial?</summary>
+            <p>Yes. Both plans include a 3-day free trial before paid billing starts.</p>
+          </details>
+          <details>
+            <summary>When do I see my Screen Time passcode?</summary>
+            <p>The passcode reveal is blocked until your selected lock duration expires. Then reveal becomes available for that device.</p>
+          </details>
+        </div>
       </section>
     </section>
 
@@ -276,6 +435,6 @@
       </section>
     </section>
   </div>
-  <script src="/app.js?v=20260323-2"></script>
+  <script src="/app.js?v=20260323-6"></script>
 </body>
 </html>

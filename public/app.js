@@ -189,6 +189,8 @@ async function api(path, options = {}) {
 function showAuth() {
   $("authView").classList.remove("hidden");
   $("appView").classList.add("hidden");
+  $("topSignInBtn").classList.remove("hidden");
+  $("topSignUpBtn").classList.remove("hidden");
   $("logoutBtn").classList.add("hidden");
   $("manageBillingTopBtn").classList.add("hidden");
   $("manageAccountTopBtn").classList.add("hidden");
@@ -197,6 +199,8 @@ function showAuth() {
 function showApp() {
   $("authView").classList.add("hidden");
   $("appView").classList.remove("hidden");
+  $("topSignInBtn").classList.add("hidden");
+  $("topSignUpBtn").classList.add("hidden");
   $("logoutBtn").classList.remove("hidden");
   $("manageBillingTopBtn").classList.remove("hidden");
   $("manageAccountTopBtn").classList.remove("hidden");
@@ -962,9 +966,9 @@ async function renderAuth() {
   if (!clerkClient) return;
   const target = $("clerkAuth");
   target.innerHTML = `
-    <div class="row billing-actions">
-      <button id="clerkSignInBtn">Sign in with Clerk</button>
-      <button id="clerkSignUpBtn" class="ghost">Sign up with Clerk</button>
+    <div class="row auth-actions">
+      <button id="clerkSignInBtn">Sign in</button>
+      <button id="clerkSignUpBtn" class="ghost">Sign up</button>
     </div>
   `;
   $("clerkSignInBtn").onclick = () => clerkClient.redirectToSignIn({ signInForceRedirectUrl: window.location.origin });
@@ -1084,6 +1088,39 @@ $("manageBillingTopBtn").onclick = () => {
 $("manageAccountTopBtn").onclick = () => {
   manageAccount();
 };
+$("topSignInBtn").onclick = async () => {
+  if (!clerkClient) {
+    setMsg($("authMsg"), "Auth is loading. Try again in a moment.", true);
+    return;
+  }
+  await clerkClient.redirectToSignIn({ signInForceRedirectUrl: window.location.origin });
+};
+$("topSignUpBtn").onclick = async () => {
+  if (!clerkClient) {
+    setMsg($("authMsg"), "Auth is loading. Try again in a moment.", true);
+    return;
+  }
+  await clerkClient.redirectToSignUp({ signUpForceRedirectUrl: window.location.origin });
+};
+const pricingMonthlyBtn = $("pricingMonthlyBtn");
+if (pricingMonthlyBtn) pricingMonthlyBtn.onclick = () => startPlan("monthly");
+const pricingYearlyBtn = $("pricingYearlyBtn");
+if (pricingYearlyBtn) pricingYearlyBtn.onclick = () => startPlan("yearly");
+const getStartedBtn = $("getStartedBtn");
+if (getStartedBtn) {
+  getStartedBtn.onclick = async () => {
+    if (!clerkClient) {
+      setMsg($("authMsg"), "Auth is loading. Try again in a moment.", true);
+      return;
+    }
+    if (clerkClient.user && clerkClient.session) {
+      showApp();
+      await loadStatus();
+      return;
+    }
+    await clerkClient.redirectToSignUp({ signUpForceRedirectUrl: window.location.origin });
+  };
+}
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) => {
