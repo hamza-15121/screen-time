@@ -225,6 +225,85 @@ h2 {
   font-size: 0.9em;
 }
 
+.platform-panel {
+  margin-top: 14px;
+  border: 1px solid #bfd2c7;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fff8eb, #effff7);
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.platform-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.platform-eyebrow {
+  margin: 0;
+  font-family: "Unbounded", sans-serif;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #1b6a5f;
+}
+
+.platform-copy {
+  margin: 0;
+  color: #3b5752;
+  font-size: 0.92rem;
+}
+
+.platform-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.platform-tile {
+  border-radius: 14px;
+  border: 1px solid #bfd3c8;
+  background: linear-gradient(145deg, #fffaf0, #effff7);
+  padding: 10px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.platform-live {
+  border-color: #7bc4a8;
+  background: linear-gradient(145deg, #ecfff5, #f8fff0);
+}
+
+.platform-tile svg {
+  width: 34px;
+  height: 34px;
+}
+
+.platform-tile p {
+  margin: 0;
+  font-family: "Unbounded", sans-serif;
+  font-size: 0.72rem;
+  color: #183f39;
+}
+
+.platform-badge {
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-family: "Unbounded", sans-serif;
+  font-size: 0.62rem;
+  background: #1f9b72;
+  color: #fff;
+}
+
+.platform-badge.soon {
+  background: #c6772f;
+}
+
 .landing-art {
   border-radius: 18px;
   border: 1px solid #c2d2ca;
@@ -303,6 +382,59 @@ h2 {
 .section-keywords {
   display: grid;
   gap: 8px;
+}
+
+.usecase-head {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.usecase-head-art {
+  border: 1px solid #c2d4ca;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fff9ec, #e9fff6);
+  padding: 6px;
+}
+
+.usecase-head-art svg {
+  width: 100%;
+  display: block;
+}
+
+.usecase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.usecase-card {
+  border: 1px solid #bfd2c8;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fffdf6, #f0fff8);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.usecase-card svg {
+  width: 100%;
+  max-height: 76px;
+}
+
+.usecase-card h4 {
+  margin: 0;
+  font-family: "Unbounded", sans-serif;
+  font-size: 0.92rem;
+}
+
+.usecase-card p {
+  margin: 0;
+  color: #3b5450;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .keyword-ribbon {
@@ -859,7 +991,10 @@ label.inline input {
 
   .grid-2,
   .choice-grid,
-  .mapping-grid {
+  .mapping-grid,
+  .platform-strip,
+  .usecase-grid,
+  .usecase-head {
     grid-template-columns: 1fr;
   }
 

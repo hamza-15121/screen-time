@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const { v4: uuid } = require("uuid");
+const { randomUUID } = require("crypto");
 const path = require("path");
 const fs = require("fs");
 
@@ -87,7 +87,7 @@ function getOrCreateBillingProfile(userId) {
   let profile = readDb().billingProfiles.find((p) => p.userId === userId);
   if (!profile) {
     profile = {
-      id: uuid(),
+      id: randomUUID(),
       userId,
       stripeCustomerId: null,
       subscriptionId: null,
@@ -155,7 +155,7 @@ function upsertBillingProfileFromSubscription(subscription, preferredUserId = nu
     }
     if (!profile) {
       profile = {
-        id: uuid(),
+        id: randomUUID(),
         userId: preferredUserId || null,
         stripeCustomerId: customerId || null,
         subscriptionId: null,
@@ -212,7 +212,7 @@ function pickSequenceForSystem() {
   withDb((nextDb) => {
     if (!Array.isArray(nextDb.generatedSequences)) nextDb.generatedSequences = [];
     nextDb.generatedSequences.push({
-      id: uuid(),
+      id: randomUUID(),
       sequenceId: selected.id,
       generatedAt: new Date().toISOString()
     });
@@ -445,7 +445,7 @@ function buildApp() {
 
     withDb((db) => {
       db.setupProgress.push({
-        id: uuid(),
+        id: randomUUID(),
         userId: req.user.sub,
         track,
         platform,
@@ -498,7 +498,7 @@ function buildApp() {
         : fallbackPasscode;
 
     const lockSession = {
-      id: uuid(),
+      id: randomUUID(),
       userId: req.user.sub,
       track,
       platform,
@@ -611,7 +611,7 @@ function buildApp() {
         target.status = "revealed";
         target.revealEligible = true;
       }
-      db.revealEvents.push({ id: uuid(), userId: req.user.sub, lockSessionId: session.id, revealedAt: new Date().toISOString() });
+      db.revealEvents.push({ id: randomUUID(), userId: req.user.sub, lockSessionId: session.id, revealedAt: new Date().toISOString() });
     });
 
     return res.json({ lockSessionId: session.id, code: session.passcode.code, revealedAt: new Date().toISOString() });
