@@ -1,0 +1,22 @@
+{
+  "users": [],
+  "setupProgress": [],
+  "lockSessions": [],
+  "revealEvents": [],
+  "generatedSequences": [],
+  "billingProfiles": [
+    {
+      "id": "bp-1",
+      "userId": "dev-user-1",
+      "stripeCustomerId": "cus_test",
+      "subscriptionId": "sub_test",
+      "subscriptionStatus": "active",
+      "entitled": true,
+      "priceId": "price_test",
+      "currentPeriodEnd": null,
+      "trialEndsAt": null,
+      "createdAt": "2026-03-22T22:07:46.413Z",
+      "updatedAt": "2026-03-22T22:07:46.413Z"
+    }
+  ]
+}

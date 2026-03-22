@@ -1,0 +1,8 @@
+{
+  "name": "Scrrentime",
+  "short_name": "Scrrentime",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#f5efe6",
+  "theme_color": "#3b5b3b"
+}

@@ -1,0 +1,35 @@
+{
+    "name": "screentime",
+    "version": "1.0.0",
+    "description": "Scrrentime v1 PWA + API",
+    "main": "src/server.js",
+    "type": "commonjs",
+    "scripts": {
+        "start": "node src/server.js",
+        "dev": "node src/server.js",
+        "test": "vitest run",
+        "tts": "node src/tools/generate-tts.js",
+        "tts:dry": "node src/tools/generate-tts.js --dry-run"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@clerk/backend": "^3.2.2",
+        "@clerk/clerk-js": "^6.3.2",
+        "@clerk/express": "^2.0.6",
+        "@google-cloud/text-to-speech": "^6.4.0",
+        "bcryptjs": "^3.0.2",
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "morgan": "^1.10.1",
+        "openai": "^6.32.0",
+        "stripe": "^17.7.0",
+        "uuid": "^13.0.0"
+    },
+    "devDependencies": {
+        "supertest": "^7.1.4",
+        "vitest": "^3.2.4"
+    }
+}

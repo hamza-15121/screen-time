@@ -1,0 +1,335 @@
+{
+  "users": [],
+  "setupProgress": [
+    {
+      "id": "bfaf1d8e-03e8-441a-9f19-ce34ece0a9e0",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "find_my_toggle",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T13:25:48.075Z"
+    },
+    {
+      "id": "8d6996db-0888-4333-9bb9-e1963f67b4a1",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "set_easy_temp_pin",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T13:26:07.133Z"
+    },
+    {
+      "id": "4708fab9-64f8-48d1-9b64-d601bd2e4f69",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "app_limits_zero",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T14:16:57.986Z"
+    },
+    {
+      "id": "6ad93b22-c753-4c4f-90e4-efc7c3e543cd",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "web_allowed_only",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T14:18:46.472Z"
+    },
+    {
+      "id": "02e96204-dd09-4ac7-a950-d0def6db7d0d",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "disable_store_changes",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T14:20:13.686Z"
+    },
+    {
+      "id": "2e7edf08-7b13-4a42-9f96-d872aabe4f84",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "disable_account_changes",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T14:20:19.293Z"
+    },
+    {
+      "id": "9a94be68-8ba8-43f1-be83-309d3f09251a",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "open_change_passcode",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T14:20:29.706Z"
+    },
+    {
+      "id": "f78b6ab7-2bf2-4cfc-bb43-cf7e176c4477",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "recovery_notice",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T15:05:46.911Z"
+    },
+    {
+      "id": "329f8a0e-4f5a-4f0b-9b48-ccb168184a45",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "find_my_toggle",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T18:37:31.582Z"
+    },
+    {
+      "id": "3e576747-45dc-417e-b271-81a5dba4ab8c",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "set_easy_temp_pin",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T18:40:42.713Z"
+    },
+    {
+      "id": "2c28e7cc-a9cb-46b3-9dfb-962ccba5187f",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "app_limits_zero",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T18:41:30.794Z"
+    },
+    {
+      "id": "20c69820-cb79-4f94-a915-6a08ac5736ac",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "web_allowed_only",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T19:02:36.756Z"
+    },
+    {
+      "id": "c0c54891-dcc2-4709-bce9-d3bd81dd75ca",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "disable_store_changes",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T19:02:41.124Z"
+    },
+    {
+      "id": "392d56e7-49da-40fe-b090-80e32baa0678",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "disable_account_changes",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T19:02:43.308Z"
+    },
+    {
+      "id": "277caead-7272-478a-a65f-1ba5c783247a",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "open_change_passcode",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T19:02:44.844Z"
+    },
+    {
+      "id": "a115516a-f876-4f42-a009-261c0bdf190f",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "adult_content_block",
+      "platform": "ios",
+      "stepId": "recovery_notice",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T19:04:30.755Z"
+    },
+    {
+      "id": "4d4eedad-21b3-44b8-a158-5a081191789c",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "stepId": "sign_out_icloud",
+      "acknowledgedRisk": true,
+      "confirmedAt": "2026-03-22T20:27:42.697Z"
+    }
+  ],
+  "lockSessions": [
+    {
+      "id": "85775b3b-6861-4f3c-9ecf-1bb176f0df13",
+      "userId": "user_3BIoG4oLrxQVBOLPECWWBFBaB7D",
+      "track": "study_focus",
+      "platform": "ios",
+      "durationHours": 4,
+      "durationValue": 4,
+      "durationUnit": "hours",
+      "deviceName": null,
+      "startedAt": "2026-03-22T20:32:12.490Z",
+      "endsAt": "2026-03-23T00:32:12.490Z",
+      "status": "locked",
+      "revealEligible": false,
+      "completionAttestation": true,
+      "passcode": {
+        "id": "code-16",
+        "code": "4136",
+        "tokens": [
+          "six",
+          "Backspace",
+          "m",
+          "Backspace",
+          "nine",
+          "Backspace",
+          "eight",
+          "Backspace",
+          "four",
+          "Backspace",
+          "g",
+          "zero",
+          "Backspace",
+          "five",
+          "Backspace",
+          "j",
+          "Backspace",
+          "p",
+          "Backspace",
+          "one",
+          "Backspace",
+          "one",
+          "six",
+          "Backspace",
+          "four",
+          "Backspace",
+          "three",
+          "m",
+          "two",
+          "Backspace",
+          "five",
+          "Backspace",
+          "one",
+          "Backspace",
+          "four",
+          "w",
+          "Backspace",
+          "d",
+          "Backspace",
+          "two",
+          "Backspace",
+          "j",
+          "Backspace",
+          "four",
+          "Backspace",
+          "one",
+          "m",
+          "Backspace",
+          "d",
+          "Backspace",
+          "seven",
+          "Backspace",
+          "five",
+          "Backspace",
+          "p",
+          "Backspace",
+          "three",
+          "six"
+        ],
+        "source": "codes_file"
+      },
+      "sequenceId": "code-16"
+    }
+  ],
+  "revealEvents": [],
+  "generatedSequences": [
+    {
+      "id": "b4dacdcc-1698-4092-bfad-40a94002b703",
+      "sequenceId": "code-10",
+      "generatedAt": "2026-03-22T18:34:42.920Z"
+    },
+    {
+      "id": "df120798-9263-44ea-9927-e34034b9797e",
+      "sequenceId": "code-2",
+      "generatedAt": "2026-03-22T18:37:04.142Z"
+    },
+    {
+      "id": "4032f6d6-0eb6-49be-91e9-05130e42c9c8",
+      "sequenceId": "code-21",
+      "generatedAt": "2026-03-22T18:42:05.373Z"
+    },
+    {
+      "id": "1f49d400-19ee-4ba2-ae50-6d4b1943bde5",
+      "sequenceId": "code-23",
+      "generatedAt": "2026-03-22T19:02:09.111Z"
+    },
+    {
+      "id": "93dc0676-5ff9-463f-b0f5-c548710f2b6f",
+      "sequenceId": "code-26",
+      "generatedAt": "2026-03-22T19:05:40.812Z"
+    },
+    {
+      "id": "cc188f14-628b-4977-a406-87fd46f28b03",
+      "sequenceId": "code-37",
+      "generatedAt": "2026-03-22T19:05:43.593Z"
+    },
+    {
+      "id": "89a4adcc-db07-4155-b26c-375e675ebafb",
+      "sequenceId": "code-30",
+      "generatedAt": "2026-03-22T19:05:45.461Z"
+    },
+    {
+      "id": "86c5dd95-6941-4e7f-8ee1-481a9ed2e59b",
+      "sequenceId": "code-7",
+      "generatedAt": "2026-03-22T19:05:47.432Z"
+    },
+    {
+      "id": "28687e22-7835-47a3-9a28-5b8dbb2332c0",
+      "sequenceId": "code-12",
+      "generatedAt": "2026-03-22T19:45:21.195Z"
+    },
+    {
+      "id": "f23cdb53-8e8b-40be-a28c-654f14053856",
+      "sequenceId": "code-39",
+      "generatedAt": "2026-03-22T19:46:07.243Z"
+    },
+    {
+      "id": "dfbf3e97-0223-403a-aa3f-95f8609d1d38",
+      "sequenceId": "code-5",
+      "generatedAt": "2026-03-22T19:51:21.137Z"
+    },
+    {
+      "id": "9f16c2c0-c9cd-4950-8898-8917e5288767",
+      "sequenceId": "code-20",
+      "generatedAt": "2026-03-22T19:52:36.679Z"
+    },
+    {
+      "id": "8417749b-ef7c-48c4-bc33-d8fd3dda92aa",
+      "sequenceId": "code-32",
+      "generatedAt": "2026-03-22T19:52:53.374Z"
+    },
+    {
+      "id": "278af76d-24a7-4734-9dbb-d1b8f7872760",
+      "sequenceId": "code-50",
+      "generatedAt": "2026-03-22T20:05:45.846Z"
+    },
+    {
+      "id": "3a435062-ce19-4796-ba34-c3f67c82aa67",
+      "sequenceId": "code-36",
+      "generatedAt": "2026-03-22T20:06:09.691Z"
+    },
+    {
+      "id": "9d0a4305-e5f7-4277-97de-9d97c25ccd6b",
+      "sequenceId": "code-16",
+      "generatedAt": "2026-03-22T20:27:29.830Z"
+    },
+    {
+      "id": "fe99041f-17fa-49d3-ba7b-9b0538e859af",
+      "sequenceId": "code-8",
+      "generatedAt": "2026-03-22T20:33:47.196Z"
+    },
+    {
+      "id": "8760d629-1356-4627-a2c3-37e089af08f7",
+      "sequenceId": "code-3",
+      "generatedAt": "2026-03-22T20:34:07.283Z"
+    }
+  ],
+  "billingProfiles": []
+}

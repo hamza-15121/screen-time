@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>50 Sequence Stepper</title>
+  <style>
+    :root { --bg:#f4f6fb; --card:#fff; --ink:#12131a; --muted:#5d6577; --brand:#1d4ed8; --ok:#059669; --warn:#c27600; --line:#cbd5e1; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; font-family:"Segoe UI",Arial,sans-serif; color:var(--ink); background:radial-gradient(circle at 20% 20%, #f8fafc, #e8eefc); display:flex; flex-direction:column; }
+    .top { max-width:900px; width:100%; margin:0 auto; padding:14px; }
+    .meta { display:grid; grid-template-columns:repeat(4,minmax(120px,1fr)); gap:10px; margin-bottom:10px; }
+    .card { background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:12px; padding:10px; }
+    .k { font-size:12px; color:var(--muted); }
+    .v { font-size:22px; font-weight:800; margin-top:2px; }
+    .row { display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:10px; }
+    select, button { border:1px solid #bfc8df; border-radius:10px; padding:10px 12px; font-size:16px; }
+    button { border:0; color:#fff; font-weight:800; cursor:pointer; }
+    #nextBtn { background:var(--brand); min-width:150px; }
+    #nextBtn:disabled { background:#94a3b8; cursor:not-allowed; }
+    #resetBtn { background:#334155; min-width:130px; }
+    .center { flex:1; display:flex; align-items:center; justify-content:center; padding:12px; }
+    .token { width:min(900px,95vw); min-height:240px; border-radius:20px; border:2px solid #bfdbfe; background:linear-gradient(180deg,#fff,#eff6ff); display:flex; align-items:center; justify-content:center; text-align:center; font-size:clamp(48px,12vw,120px); font-weight:900; letter-spacing:1px; padding:16px; box-shadow:0 12px 30px rgba(29,78,216,.12); user-select:none; }
+    .mono { margin-top:8px; font-family:Consolas,monospace; font-size:14px; white-space:pre-wrap; }
+    .bottom { position:sticky; bottom:0; background:rgba(248,250,252,.96); border-top:1px solid var(--line); padding:12px; backdrop-filter: blur(4px); }
+    .bar { max-width:900px; margin:0 auto; display:flex; gap:10px; justify-content:center; }
+    @media (max-width:700px){ .meta{grid-template-columns:repeat(2,minmax(120px,1fr));} }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="row">
+      <div>
+        <div class="k">Sequence</div>
+        <select id="seqSelect"></select>
+      </div>
+      <div class="row" style="margin:0;">
+        <button id="resetBtn">Reset</button>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div class="card"><div class="k">Token Index</div><div id="idx" class="v">0</div></div>
+      <div class="card"><div class="k">Total Tokens</div><div id="tot" class="v">0</div></div>
+      <div class="card"><div class="k">Current Screen</div><div id="screen" class="v">1</div></div>
+      <div class="card"><div class="k">Chars In Field</div><div id="count" class="v">0 / 4</div></div>
+    </div>
+
+    <div class="card mono" id="status">Press Next to start.</div>
+    <div class="card mono" id="submits">Submissions: (none)</div>
+  </div>
+
+  <div class="center">
+    <div id="token" class="token">READY</div>
+  </div>
+
+  <div class="bottom">
+    <div class="bar">
+      <button id="nextBtn">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const DATA = [{"sequence":1,"tokens":["two","Backspace","eight","Backspace","three","Backspace","one","Pee","Backspace","Gee","Backspace","six","Backspace","three","Backspace","Pee","Backspace","zero","Jay","Backspace","zero","Backspace","Em","Backspace","eight","Backspace","seven","Backspace","four","nine","three","Backspace","six","Backspace","Dee","Backspace","Doubleyou","Backspace","five","Backspace","one","Ay","Backspace","Em","Backspace","five","Backspace","Tee","Backspace","zero","four","Backspace","Em","Backspace","Gee","Doubleyou"]},{"sequence":2,"tokens":["six","Backspace","zero","Backspace","Doubleyou","Backspace","Em","Backspace","six","Backspace","three","eight","Backspace","five","Backspace","Ay","zero","Backspace","Ay","Backspace","one","Jay","one","Backspace","Jay","Backspace","Ay","Backspace","two","Backspace","Dee","Ay","Backspace","seven","Backspace","four","Backspace","two","Backspace","Ay","three","Backspace","eight","Backspace","zero","Backspace","one","Jay"]},{"sequence":3,"tokens":["one","Backspace","Pee","Backspace","eight","Backspace","five","Backspace","four","Backspace","Tee","four","Backspace","Doubleyou","Backspace","Ay","Backspace","one","zero","Backspace","six","Backspace","zero","Backspace","Em","Backspace","six","Backspace","six","zero","seven","Backspace","Tee","Backspace","Tee","six","Backspace","one","Backspace","two","Backspace","Ay","Backspace","one","Ay","Backspace","eight","Backspace","six","zero"]},{"sequence":4,"tokens":["nine","Backspace","two","Backspace","eight","Backspace","zero","Em","Backspace","nine","Backspace","seven","Backspace","one","six","Backspace","Tee","Backspace","Ay","Backspace","Dee","Tee","six","Backspace","Ay","Backspace","four","Backspace","zero","nine","Backspace","nine","Backspace","eight","Backspace","seven","Backspace","one","Doubleyou","Backspace","two","Backspace","Doubleyou","Backspace","zero","Backspace","three","Tee"]},{"sequence":5,"tokens":["four","Backspace","Jay","Backspace","six","Backspace","Pee","Backspace","Pee","Backspace","Tee","Ay","Backspace","Tee","Backspace","Em","Backspace","zero","four","Backspace","three","Backspace","three","Backspace","Pee","Backspace","three","Jay","six","Backspace","five","Backspace","Jay","Backspace","Tee","Ay","Backspace","Doubleyou","Backspace","zero","Ay","Backspace","Ay","Backspace","three","five"]},{"sequence":6,"tokens":["one","Backspace","zero","Backspace","Gee","Backspace","Em","Backspace","Tee","six","Backspace","nine","Backspace","six","seven","Backspace","eight","Backspace","three","Backspace","Dee","Backspace","Dee","seven","four","Backspace","one","Backspace","eight","Backspace","Tee","four","Backspace","Jay","Backspace","Gee","Backspace","Dee","Backspace","six","Backspace","six","Tee","Backspace","Tee","Backspace","three","seven"]},{"sequence":7,"tokens":["eight","Backspace","five","Backspace","five","Backspace","Doubleyou","one","Backspace","Gee","Backspace","Dee","Backspace","Gee","Jay","Backspace","Gee","Backspace","Ay","Backspace","Dee","Backspace","zero","Backspace","zero","Em","four","Backspace","Jay","Backspace","six","Backspace","three","Backspace","Doubleyou","four","Backspace","eight","Backspace","five","Backspace","eight","Backspace","Jay","Backspace","Gee","six","Backspace","three","Backspace","zero","six"]},{"sequence":8,"tokens":["one","Backspace","Ay","Backspace","seven","Backspace","Jay","Backspace","two","eight","Backspace","Em","Backspace","one","Backspace","six","six","Backspace","Gee","Backspace","five","Doubleyou","five","Backspace","Ay","Backspace","four","Backspace","two","three","Backspace","four","Backspace","two","Backspace","three","Backspace","six","six","Backspace","Jay","Backspace","Jay","nine"]},{"sequence":9,"tokens":["one","Backspace","Ay","Backspace","two","Backspace","Dee","Backspace","Ay","seven","Backspace","five","Backspace","three","two","Backspace","six","Backspace","Jay","zero","one","Backspace","three","Backspace","Ay","Jay","Backspace","one","Backspace","Tee","Backspace","Gee","Backspace","Dee","eight","Backspace","Gee","Backspace","five","zero"]},{"sequence":10,"tokens":["nine","Backspace","eight","Backspace","one","Tee","Backspace","one","Backspace","eight","Backspace","Doubleyou","Backspace","Em","Tee","Backspace","two","Backspace","Doubleyou","Backspace","Em","Backspace","nine","Ay","four","Backspace","two","Backspace","one","Backspace","Pee","Backspace","one","Ay","Backspace","Pee","Backspace","six","eight","Backspace","two","Backspace","Doubleyou","two"]},{"sequence":11,"tokens":["one","Backspace","three","Backspace","zero","Backspace","zero","Backspace","Jay","five","Backspace","three","Backspace","Gee","Backspace","zero","Backspace","Gee","seven","Backspace","zero","Backspace","zero","nine","five","Backspace","Ay","Backspace","five","six","Backspace","Ay","Backspace","three","Backspace","three","Backspace","one","Backspace","Gee","eight","Backspace","Ay","Backspace","four","Backspace","zero","Doubleyou"]},{"sequence":12,"tokens":["seven","Backspace","Pee","Backspace","Tee","Backspace","seven","Doubleyou","Backspace","nine","Backspace","four","Backspace","zero","Backspace","eight","Jay","Backspace","zero","Backspace","three","Backspace","Jay","Backspace","one","three","two","Backspace","Ay","Backspace","six","Backspace","seven","Ay","Backspace","nine","Backspace","two","Backspace","six","Backspace","eight","eight","Backspace","Pee","Backspace","five","Backspace","zero","Backspace","Tee","Backspace","one","Dee"]},{"sequence":13,"tokens":["six","Backspace","Em","Backspace","one","Gee","Backspace","nine","Backspace","Tee","six","Backspace","Tee","Backspace","Gee","Backspace","eight","Backspace","Gee","six","eight","Backspace","Em","Backspace","Gee","Backspace","seven","Backspace","one","seven","Backspace","Jay","Backspace","Tee","zero","Backspace","two","Backspace","Gee","Backspace","six","Backspace","Gee","six"]},{"sequence":14,"tokens":["three","Backspace","Dee","Backspace","Doubleyou","Em","Backspace","seven","Backspace","nine","Backspace","Ay","Backspace","five","Doubleyou","Backspace","Ay","Backspace","Em","Backspace","Pee","Backspace","Em","Backspace","three","Tee","zero","Backspace","Pee","Backspace","Doubleyou","Backspace","Dee","Backspace","Doubleyou","Backspace","Doubleyou","three","Backspace","two","Backspace","Em","Backspace","three","Backspace","Jay","seven","Backspace","Gee","Backspace","four","Backspace","four","Backspace","three","Tee"]},{"sequence":15,"tokens":["six","Backspace","six","Backspace","Ay","Backspace","one","one","Backspace","Doubleyou","Backspace","six","Backspace","Em","Backspace","zero","one","Backspace","seven","Backspace","Dee","six","one","Backspace","seven","Backspace","one","Backspace","six","Backspace","one","nine","Backspace","Ay","Backspace","two","Backspace","zero","five","Backspace","one","Backspace","three","Em"]},{"sequence":16,"tokens":["six","Backspace","Em","Backspace","nine","Backspace","eight","Backspace","four","Backspace","Gee","zero","Backspace","five","Backspace","Jay","Backspace","Pee","Backspace","one","Backspace","one","six","Backspace","four","Backspace","three","Em","two","Backspace","five","Backspace","one","Backspace","four","Doubleyou","Backspace","Dee","Backspace","two","Backspace","Jay","Backspace","four","Backspace","one","Em","Backspace","Dee","Backspace","seven","Backspace","five","Backspace","Pee","Backspace","three","six"]},{"sequence":17,"tokens":["three","Backspace","one","Backspace","Em","Backspace","one","Jay","Backspace","nine","Backspace","five","Backspace","Em","Pee","Backspace","Dee","Backspace","Gee","three","five","Backspace","one","Backspace","nine","Backspace","seven","Backspace","one","nine","Backspace","two","Backspace","six","Dee","Backspace","five","Backspace","seven","Backspace","Pee","Backspace","Pee","Backspace","Gee","Dee"]},{"sequence":18,"tokens":["eight","Backspace","Gee","Backspace","one","Backspace","five","four","Backspace","seven","Backspace","Ay","Backspace","zero","Backspace","Ay","five","Backspace","Dee","Backspace","Tee","Backspace","nine","Backspace","two","Backspace","nine","Tee","four","Backspace","six","Backspace","five","six","Backspace","Ay","Backspace","two","eight","Backspace","six","Backspace","eight","Backspace","Doubleyou","Backspace","zero","Backspace","Doubleyou","Tee"]},{"sequence":19,"tokens":["one","Backspace","four","Backspace","Dee","one","Backspace","Dee","Backspace","Ay","Backspace","Gee","eight","Backspace","nine","Backspace","Gee","Backspace","one","Backspace","Pee","Backspace","one","eight","eight","Backspace","one","Backspace","Dee","Pee","Backspace","five","Backspace","one","Backspace","eight","Backspace","four","Doubleyou","Backspace","one","Backspace","nine","Backspace","zero","Backspace","eight","Backspace","one","Tee"]},{"sequence":20,"tokens":["three","Backspace","three","Backspace","two","two","Backspace","zero","Backspace","Pee","Backspace","Tee","Backspace","Tee","eight","Backspace","Gee","Backspace","Em","Backspace","Gee","Backspace","three","one","one","Backspace","three","Backspace","Ay","three","Backspace","Pee","Backspace","eight","Backspace","six","Backspace","Pee","Backspace","Tee","Ay","Backspace","Doubleyou","Backspace","seven","Backspace","three","one"]},{"sequence":21,"tokens":["six","Backspace","Gee","Backspace","two","Backspace","Jay","Backspace","Pee","Pee","Backspace","two","Backspace","four","Backspace","Pee","Backspace","Em","four","Backspace","three","Backspace","Em","Backspace","Em","Backspace","four","five","six","Backspace","Ay","Backspace","Gee","Backspace","seven","two","Backspace","Dee","Backspace","Em","five","Backspace","Em","Backspace","Dee","Backspace","eight","Backspace","Gee","Jay"]},{"sequence":22,"tokens":["seven","Backspace","zero","Backspace","Tee","eight","Backspace","Jay","Backspace","five","Backspace","Dee","eight","Backspace","four","Backspace","three","Backspace","six","Backspace","five","Em","five","Backspace","Jay","Backspace","eight","nine","Backspace","Em","Backspace","one","Backspace","Pee","Backspace","Tee","Backspace","Dee","four","Backspace","Ay","Backspace","Tee","Backspace","Jay","Backspace","three","Backspace","five","six"]},{"sequence":23,"tokens":["three","Backspace","five","Backspace","Doubleyou","Backspace","zero","Doubleyou","Backspace","Pee","Backspace","Dee","zero","Backspace","six","Backspace","Doubleyou","Em","nine","Backspace","six","Backspace","zero","five","Backspace","seven","Backspace","Doubleyou","Backspace","Ay","Backspace","Ay","Backspace","Dee","Doubleyou","Backspace","Ay","Backspace","Dee","Backspace","Doubleyou","Backspace","Doubleyou","six"]},{"sequence":24,"tokens":["six","Backspace","one","Backspace","nine","Backspace","Jay","Ay","Backspace","three","Backspace","Em","Pee","Backspace","three","Backspace","Ay","Backspace","Gee","zero","four","Backspace","eight","Backspace","Jay","Tee","Backspace","eight","Backspace","six","Tee","Backspace","eight","Backspace","Em","Backspace","zero","Backspace","eight","Backspace","Gee","zero"]},{"sequence":25,"tokens":["seven","Backspace","six","Backspace","six","Backspace","Dee","five","Backspace","zero","Backspace","Tee","Backspace","two","Backspace","Jay","Em","Backspace","three","Backspace","Jay","Backspace","zero","Backspace","six","Backspace","Doubleyou","eight","four","Backspace","five","Backspace","five","Backspace","Em","Backspace","three","seven","Backspace","Dee","Backspace","six","Backspace","zero","Backspace","five","four","Backspace","one","Backspace","Gee","Backspace","nine","Backspace","Tee","Backspace","Doubleyou","eight"]},{"sequence":26,"tokens":["six","Backspace","two","Backspace","three","Backspace","Gee","Backspace","Em","Backspace","one","Pee","Backspace","two","Backspace","eight","zero","Backspace","one","Backspace","seven","Backspace","seven","Dee","six","Backspace","zero","Backspace","Doubleyou","Backspace","Em","Backspace","six","Backspace","one","eight","Backspace","five","Backspace","Tee","zero","Backspace","Ay","Backspace","seven","Dee"]},{"sequence":27,"tokens":["five","Backspace","one","Backspace","eight","Backspace","four","Backspace","two","Doubleyou","Backspace","one","Backspace","Tee","Backspace","five","Em","Backspace","five","Backspace","one","Tee","nine","Backspace","two","Backspace","eight","Backspace","Ay","Em","Backspace","nine","Backspace","seven","Backspace","five","six","Backspace","Tee","Backspace","Ay","Backspace","one","Tee"]},{"sequence":28,"tokens":["six","Backspace","Ay","Backspace","one","Backspace","three","seven","Backspace","Ay","Backspace","three","Backspace","Ay","Pee","Backspace","one","Backspace","Gee","seven","one","Backspace","zero","Backspace","Gee","Backspace","Em","Backspace","Dee","six","Backspace","nine","Backspace","two","seven","Backspace","eight","Backspace","three","Backspace","Dee","Backspace","Gee","seven"]},{"sequence":29,"tokens":["four","Backspace","three","Backspace","Dee","Backspace","zero","Backspace","two","Backspace","zero","zero","Backspace","eight","Backspace","Jay","Backspace","four","one","Backspace","Dee","Backspace","Tee","Backspace","Em","seven","one","Backspace","Ay","Backspace","seven","Backspace","Jay","Backspace","zero","eight","Backspace","Em","Backspace","one","Backspace","four","six","Backspace","Gee","Backspace","six","Pee"]},{"sequence":30,"tokens":["four","Backspace","five","Backspace","Pee","Backspace","Em","Backspace","three","nine","Backspace","six","Backspace","zero","Backspace","six","Doubleyou","Backspace","Ay","Backspace","one","Ay","nine","Backspace","eight","Backspace","three","Tee","Backspace","one","Backspace","eight","Backspace","Doubleyou","Backspace","Em","Tee","Backspace","two","Backspace","Doubleyou","Backspace","Em","Backspace","one","Ay"]},{"sequence":31,"tokens":["four","Backspace","Gee","Backspace","one","Backspace","Dee","Backspace","zero","Ay","Backspace","Tee","Backspace","Jay","Backspace","Dee","five","Backspace","five","Backspace","four","Backspace","seven","Backspace","eight","one","seven","Backspace","Pee","Backspace","Tee","Backspace","zero","Doubleyou","Backspace","nine","Backspace","four","Backspace","zero","Backspace","three","Jay","Backspace","zero","Backspace","three","Backspace","Jay","Backspace","eight","one"]},{"sequence":32,"tokens":["two","Backspace","two","Backspace","Jay","two","Backspace","Pee","Backspace","five","Backspace","Tee","Backspace","four","Backspace","two","four","Backspace","Gee","Backspace","one","Gee","three","Backspace","Dee","Backspace","Jay","Em","Backspace","seven","Backspace","nine","Backspace","Ay","Backspace","two","Doubleyou","Backspace","Ay","Backspace","Em","Backspace","Pee","Backspace","Em","Backspace","one","Gee"]},{"sequence":33,"tokens":["one","Backspace","Ay","Backspace","nine","nine","Backspace","Dee","Backspace","Pee","Jay","Backspace","Gee","Backspace","nine","Backspace","five","one","six","Backspace","Em","Backspace","nine","Backspace","eight","Backspace","four","Backspace","Doubleyou","zero","Backspace","five","Backspace","Jay","Backspace","Pee","Backspace","one","Backspace","seven","six","Backspace","four","Backspace","five","one"]},{"sequence":34,"tokens":["six","Backspace","Jay","Backspace","Pee","Dee","Backspace","Ay","Backspace","nine","five","Backspace","eight","Backspace","one","Backspace","zero","five","eight","Backspace","Gee","Backspace","one","Backspace","seven","four","Backspace","seven","Backspace","Ay","Backspace","zero","Backspace","Doubleyou","five","Backspace","Dee","Backspace","Tee","Backspace","nine","Backspace","two","Backspace","zero","Jay"]},{"sequence":35,"tokens":["eight","Backspace","Ay","Backspace","five","Backspace","eight","Backspace","five","Backspace","zero","Em","Backspace","Ay","Backspace","Ay","Backspace","nine","Backspace","Dee","Ay","Backspace","nine","Backspace","Ay","Backspace","one","five","three","Backspace","three","Backspace","zero","two","Backspace","zero","Backspace","Pee","Backspace","Tee","Backspace","Dee","eight","Backspace","Gee","Backspace","Em","Backspace","Gee","Backspace","one","Jay"]},{"sequence":36,"tokens":["five","Backspace","Tee","Backspace","nine","Backspace","Gee","Backspace","Ay","Backspace","Dee","four","Backspace","Pee","Backspace","zero","Backspace","six","Ay","Backspace","seven","Backspace","Pee","Backspace","Gee","eight","seven","Backspace","zero","Backspace","Dee","eight","Backspace","Jay","Backspace","five","Backspace","Em","eight","Backspace","four","Backspace","three","Backspace","six","Backspace","four","Tee"]},{"sequence":37,"tokens":["five","Backspace","Tee","Backspace","nine","Backspace","Tee","four","Backspace","Ay","Backspace","two","Backspace","one","Backspace","Ay","Backspace","five","Jay","Backspace","Doubleyou","Backspace","zero","Em","six","Backspace","one","Backspace","nine","Backspace","Tee","Ay","Backspace","three","Backspace","Jay","Pee","Backspace","three","Backspace","Ay","Backspace","zero","Em"]},{"sequence":38,"tokens":["six","Backspace","Ay","Backspace","Em","Backspace","nine","Backspace","two","Gee","Backspace","Doubleyou","Backspace","seven","Dee","Backspace","seven","Backspace","one","Dee","seven","Backspace","Doubleyou","Backspace","eight","Backspace","zero","Backspace","two","three","Backspace","Pee","Backspace","Pee","seven","Backspace","three","Backspace","five","Backspace","eight","Backspace","one","three"]},{"sequence":39,"tokens":["one","Backspace","Doubleyou","Backspace","Doubleyou","Gee","Backspace","four","Backspace","Pee","Backspace","two","Backspace","seven","Backspace","Tee","five","Backspace","Ay","Backspace","six","Backspace","Tee","Backspace","two","one","nine","Backspace","Tee","Backspace","nine","Backspace","Doubleyou","six","Backspace","Doubleyou","Backspace","one","Backspace","two","Backspace","Tee","seven","Backspace","Gee","Backspace","Ay","one"]},{"sequence":40,"tokens":["zero","Backspace","Em","Backspace","Em","Backspace","five","Backspace","Dee","three","Backspace","Doubleyou","Backspace","one","six","Backspace","Em","Backspace","zero","Tee","zero","Backspace","Dee","Backspace","nine","Backspace","zero","Backspace","one","Backspace","Dee","nine","Backspace","Em","Backspace","three","Backspace","one","Tee","Backspace","five","Backspace","Gee","Backspace","two","Backspace","three","Backspace","zero","eight"]},{"sequence":41,"tokens":["zero","Backspace","Jay","Backspace","three","Backspace","Em","Backspace","two","Backspace","zero","Ay","Backspace","Em","Backspace","Tee","five","Backspace","Doubleyou","Backspace","zero","Backspace","Em","Backspace","Gee","one","seven","Backspace","nine","Backspace","zero","eight","Backspace","five","Backspace","eight","eight","Backspace","zero","Backspace","four","Backspace","Gee","one"]},{"sequence":42,"tokens":["seven","Backspace","four","Backspace","three","Backspace","six","Backspace","three","Backspace","Dee","Pee","Backspace","Tee","Backspace","seven","Gee","Backspace","Gee","Backspace","Jay","Em","nine","Backspace","seven","Backspace","Jay","Backspace","Gee","Backspace","Jay","Backspace","three","six","Backspace","Gee","Backspace","Pee","six","Backspace","three","Backspace","Ay","Backspace","nine","Backspace","Em","Backspace","five","Em"]},{"sequence":43,"tokens":["one","Backspace","Pee","Backspace","six","Backspace","Tee","Backspace","Pee","Gee","Backspace","Pee","Backspace","seven","Backspace","Pee","Backspace","Jay","Backspace","one","seven","Backspace","five","Backspace","Tee","Backspace","one","Backspace","zero","Dee","eight","Backspace","zero","Backspace","three","Backspace","seven","two","Backspace","seven","Backspace","Ay","Backspace","Tee","Backspace","one","Em","Backspace","nine","Backspace","one","Backspace","one","Backspace","zero","three"]},{"sequence":44,"tokens":["eight","Backspace","Pee","Backspace","Pee","Backspace","five","Backspace","Tee","Tee","Backspace","Dee","Backspace","three","Backspace","one","three","Backspace","five","Backspace","Em","Gee","seven","Backspace","five","Backspace","Tee","one","Backspace","six","Backspace","one","Jay","Backspace","six","Backspace","eight","Backspace","Dee","Backspace","Jay","Backspace","six","Gee"]},{"sequence":45,"tokens":["one","Backspace","zero","Backspace","Gee","Backspace","six","Backspace","three","Backspace","one","one","Backspace","four","Backspace","zero","Dee","Backspace","three","Backspace","Em","Backspace","Gee","three","seven","Backspace","zero","Backspace","Dee","Backspace","one","nine","Backspace","Doubleyou","Backspace","eight","Backspace","one","Backspace","zero","Dee","Backspace","Doubleyou","Backspace","Jay","Backspace","Dee","Backspace","four","Dee"]},{"sequence":46,"tokens":["three","Backspace","nine","Backspace","Dee","Backspace","zero","Backspace","eight","zero","Backspace","seven","Backspace","Gee","Doubleyou","Backspace","Dee","Backspace","Dee","Backspace","Pee","zero","eight","Backspace","eight","Backspace","Jay","Backspace","Jay","Backspace","Tee","Ay","Backspace","Pee","Backspace","six","Backspace","nine","Backspace","four","one","Backspace","Doubleyou","Backspace","two","Backspace","seven","zero"]},{"sequence":47,"tokens":["nine","Backspace","Tee","Backspace","Ay","Backspace","zero","Backspace","nine","five","Backspace","Doubleyou","Backspace","Pee","Backspace","Em","Backspace","Doubleyou","Backspace","Pee","Pee","Backspace","one","Backspace","zero","eight","six","Backspace","three","Backspace","Doubleyou","Doubleyou","Backspace","six","Backspace","four","Backspace","Ay","Backspace","Pee","eight","Backspace","Jay","Backspace","eight","Backspace","eight","Backspace","five","Backspace","zero","Tee"]},{"sequence":48,"tokens":["three","Backspace","eight","Backspace","six","Backspace","Gee","Backspace","seven","one","Backspace","two","Backspace","one","Dee","Backspace","nine","Backspace","Em","Backspace","two","Backspace","Tee","two","zero","Backspace","zero","Backspace","four","Backspace","seven","Backspace","Tee","Backspace","Pee","Tee","Backspace","Ay","Backspace","five","Backspace","one","Backspace","one","zero","Backspace","six","Backspace","Tee","Backspace","Tee","Ay"]},{"sequence":49,"tokens":["zero","Backspace","seven","Backspace","Dee","Backspace","one","Tee","Backspace","five","Backspace","Tee","Backspace","zero","Backspace","six","Backspace","nine","Dee","Backspace","five","Backspace","seven","Backspace","seven","two","one","Backspace","four","Backspace","Gee","Backspace","one","nine","Backspace","two","Backspace","eight","Backspace","nine","Dee","Backspace","Em","Backspace","Pee","two"]},{"sequence":50,"tokens":["six","Backspace","Dee","Backspace","four","Backspace","two","five","Backspace","one","Backspace","Gee","Backspace","Em","Em","Backspace","seven","Backspace","five","Backspace","Doubleyou","Backspace","eight","one","nine","Backspace","zero","Backspace","eight","Backspace","Ay","Jay","Backspace","five","Backspace","Em","Em","Backspace","nine","Backspace","Tee","one"]}];
+    const digitWords = new Set(["zero","one","two","three","four","five","six","seven","eight","nine"]);
+    const wordToDigit = { zero:"0", one:"1", two:"2", three:"3", four:"4", five:"5", six:"6", seven:"7", eight:"8", nine:"9" };
+    const letterToDigit = { a:"2", ay:"2", d:"3", dee:"3", g:"4", gee:"4", j:"5", jay:"5", m:"6", em:"6", p:"7", pee:"7", t:"8", tee:"8", w:"9", doubleyou:"9", "double-you":"9" };
+
+    const el = {
+      seqSelect: document.getElementById('seqSelect'),
+      idx: document.getElementById('idx'),
+      tot: document.getElementById('tot'),
+      screen: document.getElementById('screen'),
+      count: document.getElementById('count'),
+      status: document.getElementById('status'),
+      submits: document.getElementById('submits'),
+      token: document.getElementById('token'),
+      next: document.getElementById('nextBtn'),
+      reset: document.getElementById('resetBtn')
+    };
+
+    const state = { seq: 0, i: 0, field: '', screen: 1, submissions: [] };
+
+    function tokens() { return DATA[state.seq].tokens; }
+
+    function tokenToDigit(tok) {
+      const t = String(tok).trim().toLowerCase();
+      if (t === 'backspace') return null;
+      if (digitWords.has(t)) return wordToDigit[t];
+      return letterToDigit[t] ?? null;
+    }
+
+    function render(msg) {
+      el.idx.textContent = String(state.i);
+      el.tot.textContent = String(tokens().length);
+      el.screen.textContent = String(state.screen);
+      el.count.textContent = state.field.length + ' / 4';
+      el.status.textContent = msg || 'Ready.';
+      el.submits.textContent = state.submissions.length
+        ? 'Submissions: ' + state.submissions.map((s, n) => '#' + (n+1) + ' Screen ' + s.screen).join(' | ')
+        : 'Submissions: (none)';
+
+      if (state.i >= tokens().length) {
+        el.next.disabled = true;
+        el.token.textContent = 'DONE';
+      } else {
+        el.next.disabled = false;
+      }
+    }
+
+    function step() {
+      if (state.i >= tokens().length) return;
+      const tok = tokens()[state.i];
+      el.token.textContent = tok;
+
+      if (String(tok).toLowerCase() === 'backspace') {
+        state.field = state.field.slice(0, -1);
+      } else {
+        const d = tokenToDigit(tok);
+        if (d !== null) state.field += d;
+      }
+
+      let msg = 'Token: ' + tok;
+      if (state.field.length === 4) {
+        state.submissions.push({ screen: state.screen });
+        msg = 'Screen ' + state.screen + ' submitted (auto)';
+        state.field = '';
+        state.screen += 1;
+      }
+
+      state.i += 1;
+      render(msg);
+    }
+
+    function reset() {
+      state.i = 0;
+      state.field = '';
+      state.screen = 1;
+      state.submissions = [];
+      el.token.textContent = 'READY';
+      render('Press Next to start.');
+    }
+
+    DATA.forEach((_, i) => {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = 'Sequence ' + (i + 1);
+      el.seqSelect.appendChild(opt);
+    });
+
+    el.seqSelect.addEventListener('change', () => {
+      state.seq = Number(el.seqSelect.value);
+      reset();
+    });
+
+    el.next.addEventListener('click', step);
+    el.reset.addEventListener('click', reset);
+
+    reset();
+  </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Code 1 Stepper</title>
+  <style>
+    :root {
+      --bg1: #f8fafc;
+      --bg2: #e8eefc;
+      --ink: #0f172a;
+      --muted: #475569;
+      --brand: #1d4ed8;
+      --ok: #059669;
+      --line: #cbd5e1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, var(--bg1), var(--bg2));
+      display: flex;
+      flex-direction: column;
+    }
+    .top {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 14px;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .k { font-size: 12px; color: var(--muted); }
+    .v { font-size: 22px; font-weight: 800; margin-top: 2px; }
+    .center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+    .token {
+      width: min(900px, 95vw);
+      min-height: 240px;
+      border-radius: 20px;
+      border: 2px solid #bfdbfe;
+      background: linear-gradient(180deg, #ffffff, #eff6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: clamp(48px, 12vw, 120px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      user-select: none;
+      box-shadow: 0 12px 30px rgba(29,78,216,0.12);
+      padding: 16px;
+    }
+    .bottom {
+      position: sticky;
+      bottom: 0;
+      background: rgba(248, 250, 252, 0.95);
+      border-top: 1px solid var(--line);
+      padding: 12px;
+      backdrop-filter: blur(4px);
+    }
+    .bar {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      min-width: 140px;
+    }
+    #nextBtn { background: var(--brand); color: #fff; }
+    #nextBtn:disabled { background: #94a3b8; cursor: not-allowed; }
+    #resetBtn { background: #334155; color: #fff; }
+    .mono {
+      margin-top: 8px;
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    @media (max-width: 700px) {
+      .meta { grid-template-columns: repeat(2, minmax(120px,1fr)); }
+      button { font-size: 17px; min-width: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h2 style="margin:0 0 10px;">Code 1 (1049)</h2>
+    <div class="meta">
+      <div class="card"><div class="k">Token Index</div><div id="idx" class="v">0</div></div>
+      <div class="card"><div class="k">Total Tokens</div><div id="tot" class="v">0</div></div>
+      <div class="card"><div class="k">Current Screen</div><div id="screen" class="v">1</div></div>
+      <div class="card"><div class="k">Chars In Field</div><div id="count" class="v">0 / 4</div></div>
+    </div>
+    <div class="card mono" id="status">Press Next to start.</div>
+    <div class="card mono" id="submits">Submissions: (none)</div>
+  </div>
+
+  <div class="center">
+    <div id="token" class="token">READY</div>
+  </div>
+
+  <div class="bottom">
+    <div class="bar">
+      <button id="resetBtn">Reset</button>
+      <button id="nextBtn">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const TOKENS = ["two","Backspace","eight","Backspace","three","Backspace","one","Pee","Backspace","Gee","Backspace","six","Backspace","three","Backspace","Pee","Backspace","zero","Jay","Backspace","zero","Backspace","Em","Backspace","eight","Backspace","seven","Backspace","four","nine","three","Backspace","six","Backspace","Dee","Backspace","Doubleyou","Backspace","five","Backspace","one","Ay","Backspace","Em","Backspace","five","Backspace","Tee","Backspace","zero","four","Backspace","Em","Backspace","Gee","Doubleyou"];
+    const digitWords = new Set(["zero","one","two","three","four","five","six","seven","eight","nine"]);
+    const wordToDigit = { zero:"0", one:"1", two:"2", three:"3", four:"4", five:"5", six:"6", seven:"7", eight:"8", nine:"9" };
+    const letterToDigit = { a:"2", ay:"2", d:"3", dee:"3", g:"4", gee:"4", j:"5", jay:"5", m:"6", em:"6", p:"7", pee:"7", t:"8", tee:"8", w:"9", doubleyou:"9", "double-you":"9" };
+
+    const el = {
+      idx: document.getElementById('idx'),
+      tot: document.getElementById('tot'),
+      screen: document.getElementById('screen'),
+      count: document.getElementById('count'),
+      status: document.getElementById('status'),
+      submits: document.getElementById('submits'),
+      token: document.getElementById('token'),
+      next: document.getElementById('nextBtn'),
+      reset: document.getElementById('resetBtn')
+    };
+
+    const state = { i: 0, field: '', screen: 1, submitted: [] };
+
+    function tokenToDigit(tok) {
+      const t = String(tok).trim().toLowerCase();
+      if (t === 'backspace') return null;
+      if (digitWords.has(t)) return wordToDigit[t];
+      return letterToDigit[t] ?? null;
+    }
+
+    function render(msg) {
+      el.idx.textContent = String(state.i);
+      el.tot.textContent = String(TOKENS.length);
+      el.screen.textContent = String(state.screen);
+      el.count.textContent = state.field.length + ' / 4';
+      el.status.textContent = msg || ('Field: ' + (state.field || '(empty)'));
+      el.submits.textContent = state.submitted.length
+        ? 'Submissions: ' + state.submitted.map((s, n) => '#' + (n+1) + ' S' + s.screen + '=' + s.code).join(' | ')
+        : 'Submissions: (none)';
+      if (state.i >= TOKENS.length) {
+        el.next.disabled = true;
+        el.token.textContent = 'DONE';
+      }
+    }
+
+    function step() {
+      if (state.i >= TOKENS.length) return;
+      const tok = TOKENS[state.i];
+      el.token.textContent = tok;
+
+      if (String(tok).toLowerCase() === 'backspace') {
+        state.field = state.field.slice(0, -1);
+      } else {
+        const d = tokenToDigit(tok);
+        if (d !== null) state.field += d;
+      }
+
+      let msg = 'Token: ' + tok + ' | Field: ' + (state.field || '(empty)');
+
+      if (state.field.length === 4) {
+        state.submitted.push({ screen: state.screen, code: state.field });
+        msg = 'Submitted screen ' + state.screen + ' = ' + state.field + ' (auto)';
+        state.field = '';
+        state.screen += 1;
+      }
+
+      state.i += 1;
+      render(msg);
+    }
+
+    function resetAll() {
+      state.i = 0;
+      state.field = '';
+      state.screen = 1;
+      state.submitted = [];
+      el.next.disabled = false;
+      el.token.textContent = 'READY';
+      render('Press Next to start.');
+    }
+
+    el.next.addEventListener('click', step);
+    el.reset.addEventListener('click', resetAll);
+    render('Press Next to start.');
+  </script>
+</body>
+</html>
