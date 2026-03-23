@@ -312,6 +312,9 @@ function buildApp() {
   app.use(cors());
   app.use(morgan("dev"));
   applyClerkMiddleware(app);
+  app.get("/healthz", (req, res) => {
+    res.json({ ok: true, service: "screentime", now: new Date().toISOString() });
+  });
   app.post("/billing/webhook", express.raw({ type: "application/json" }), async (req, res) => {
     try {
       const stripe = getStripeClient();
@@ -769,9 +772,9 @@ function buildApp() {
 if (require.main === module) {
   const app = buildApp();
   const port = process.env.PORT || 3000;
-  app.listen(port, () => {
+  app.listen(port, "0.0.0.0", () => {
     // eslint-disable-next-line no-console
-    console.log(`Scrrentime server listening on ${port}`);
+    console.log(`Scrrentime server listening on 0.0.0.0:${port}`);
   });
 }
 
