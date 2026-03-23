@@ -8,7 +8,8 @@ function getBearerToken(req) {
 }
 
 async function requireAuth(req, res, next) {
-  if (process.env.DEV_AUTH_BYPASS === "1") {
+  const isProduction = String(process.env.NODE_ENV || "").toLowerCase() === "production";
+  if (!isProduction && process.env.DEV_AUTH_BYPASS === "1") {
     req.user = { sub: "dev-user-1" };
     return next();
   }

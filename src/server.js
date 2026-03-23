@@ -111,10 +111,24 @@ function isEntitledStatus(status) {
   return ENTITLED_STATUSES.has(String(status || "").toLowerCase());
 }
 
+function isTruthy(value) {
+  return ["1", "true", "yes", "on"].includes(String(value || "").trim().toLowerCase());
+}
+
+function isFalsy(value) {
+  return ["0", "false", "no", "off"].includes(String(value || "").trim().toLowerCase());
+}
+
 function isBillingEnforcementEnabled() {
-  if (process.env.FORCE_BILLING_ENFORCEMENT === "1") return true;
-  const { secretKey, priceId } = getStripeConfig();
-  return !!secretKey && !!priceId;
+  const forced = process.env.FORCE_BILLING_ENFORCEMENT;
+  if (isTruthy(forced)) return true;
+  if (isFalsy(forced)) return false;
+
+  const { secretKey, priceId, yearlyPriceId } = getStripeConfig();
+  if (secretKey && (priceId || yearlyPriceId)) return true;
+
+  // Fail closed in production: if billing env is missing, do not allow free access by mistake.
+  return String(process.env.NODE_ENV || "").toLowerCase() === "production";
 }
 
 function getBillingProfileByUserId(userId) {
