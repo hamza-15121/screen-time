@@ -121,14 +121,15 @@ function isFalsy(value) {
 
 function isBillingEnforcementEnabled() {
   const forced = process.env.FORCE_BILLING_ENFORCEMENT;
+  const isProduction = String(process.env.NODE_ENV || "").toLowerCase() === "production";
   if (isTruthy(forced)) return true;
-  if (isFalsy(forced)) return false;
+  if (isFalsy(forced)) return isProduction;
 
   const { secretKey, priceId, yearlyPriceId } = getStripeConfig();
   if (secretKey && (priceId || yearlyPriceId)) return true;
 
   // Fail closed in production: if billing env is missing, do not allow free access by mistake.
-  return String(process.env.NODE_ENV || "").toLowerCase() === "production";
+  return isProduction;
 }
 
 function getBillingProfileByUserId(userId) {

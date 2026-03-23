@@ -33,7 +33,10 @@ const state = {
   lock: null,
   locks: [],
   revealedCode: "",
-  revealedCodeById: ""
+  revealedCodeById: "",
+  billingEntitled: false,
+  billingEnforcementEnabled: true,
+  billingSubscriptionStatus: "inactive"
 };
 
 const phaseMeta = {
@@ -112,6 +115,10 @@ function formatRemaining(ms) {
   const s = total % 60;
   if (d > 0) return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m`;
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function canCreateDevice() {
+  return !state.billingEnforcementEnabled || state.billingEntitled;
 }
 
 function updatePhaseChrome() {
@@ -585,6 +592,11 @@ function renderDashboard() {
   const locks = Array.isArray(state.locks) && state.locks.length ? state.locks : [];
   const active = locks.filter((l) => l.status === "locked" || l.status === "reveal_ready");
   const archived = locks.filter((l) => l.status === "revealed");
+  const allowAddDevice = canCreateDevice();
+  const addDeviceButton = allowAddDevice ? `<button id="addDeviceBtn">Add Another Device</button>` : "";
+  const trialGateNotice = allowAddDevice
+    ? ""
+    : `<p class="warn">Start your 3-day trial first to add a device and create a new Screen Time block.</p>`;
   const renderCards = (list, heading) => {
     if (!list.length) return "";
     const cards = list.map((lock, idx) => {
@@ -628,13 +640,14 @@ function renderDashboard() {
     </div>
     ${locks.length ? renderCards(active, `Active Devices (${active.length})`) : `<p class="subtle">No devices added yet. Add your first device to start.</p>`}
     ${renderCards(archived, "Revealed Devices")}
+    ${trialGateNotice}
     <div class="row dashboard-actions">
-      <button id="addDeviceBtn">Add Another Device</button>
+      ${addDeviceButton}
       <button id="startMonthlyBtn">Start 3-Day Trial ($4.99/mo)</button>
       <button id="startYearlyBtn" class="ghost">Start 3-Day Trial ($39.99/year)</button>
     </div>
   `;
-  $("addDeviceBtn").onclick = addAnotherDevice;
+  if ($("addDeviceBtn")) $("addDeviceBtn").onclick = addAnotherDevice;
   $("startMonthlyBtn").onclick = () => startPlan("monthly");
   $("startYearlyBtn").onclick = () => startPlan("yearly");
   document.querySelectorAll(".open-device-btn").forEach((btn) => {
@@ -658,6 +671,7 @@ function renderDeviceDetail() {
     ? `<p class="mono"><strong>Revealed passcode:</strong> ${escapeHtml(state.revealedCode)}</p>`
     : "";
   const showDelete = lock.status === "revealed";
+  const allowAddDevice = canCreateDevice();
   const revealHintText = revealEnabled ? "Timer expired. Reveal is now available." : "Reveal is blocked until timer expires.";
   const revealHintClass = revealEnabled ? "msg" : "warn";
 
@@ -684,7 +698,7 @@ function renderDeviceDetail() {
       <button id="revealBtn" ${revealEnabled ? "" : "disabled"}>Reveal Passcode</button>
       <button id="deleteDeviceBtn" class="ghost" ${showDelete ? "" : "disabled"}>Delete Device</button>
       <button id="backDashboardBtn" class="ghost">Back to Dashboard</button>
-      <button id="addDeviceBtn">Add Another Device</button>
+      ${allowAddDevice ? `<button id="addDeviceBtn">Add Another Device</button>` : ""}
     </div>
     ${revealed}
     <p id="revealHint" class="${revealHintClass}">${escapeHtml(revealHintText)}</p>
@@ -692,7 +706,7 @@ function renderDeviceDetail() {
   $("revealBtn").onclick = () => revealCode(lock.id);
   $("deleteDeviceBtn").onclick = () => deleteDevice(lock.id);
   $("backDashboardBtn").onclick = renderDashboard;
-  $("addDeviceBtn").onclick = addAnotherDevice;
+  if ($("addDeviceBtn")) $("addDeviceBtn").onclick = addAnotherDevice;
   startCountdownTicker();
 }
 
@@ -890,6 +904,17 @@ async function loadStatus() {
     return;
   }
   try {
+    try {
+      const entitlement = await api("/billing/entitlement");
+      state.billingEntitled = !!entitlement?.entitled;
+      state.billingEnforcementEnabled = !!entitlement?.enforcementEnabled;
+      state.billingSubscriptionStatus = String(entitlement?.subscriptionStatus || "inactive");
+    } catch {
+      state.billingEntitled = false;
+      state.billingEnforcementEnabled = true;
+      state.billingSubscriptionStatus = "unknown";
+    }
+
     const out = await api("/lock/status");
     const sessions = Array.isArray(out.sessions) ? out.sessions : (out.id ? [out] : []);
     if (!sessions.length) {
@@ -938,6 +963,11 @@ async function deleteDevice(lockSessionId) {
 }
 
 function addAnotherDevice() {
+  if (!canCreateDevice()) {
+    setMsg($("appMsg"), "Start your 3-day trial first to add a new device.", true);
+    renderDashboard();
+    return;
+  }
   stopCountdownTicker();
   state.selectedLockId = "";
   state.stepIndex = 0;
