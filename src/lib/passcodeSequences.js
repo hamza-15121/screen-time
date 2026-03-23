@@ -1,11 +1,15 @@
 const fs = require("fs");
 const path = require("path");
 
-const FILE_PATH = path.join(__dirname, "..", "..", "Codes.txt");
+const FILE_PATHS = [
+  path.join(__dirname, "..", "..", "Codes.txt"),
+  path.join(__dirname, "..", "..", "51-100 screentime passcodes.txt")
+];
 let cache = null;
 
-function parseCodes() {
-  const lines = fs.readFileSync(FILE_PATH, "utf8").split(/\r?\n/);
+function parseCodesFromFile(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/);
   const list = [];
 
   for (let i = 0; i < lines.length; i += 1) {
@@ -29,6 +33,18 @@ function parseCodes() {
   }
 
   return list;
+}
+
+function parseCodes() {
+  const byId = new Map();
+
+  FILE_PATHS.forEach((filePath) => {
+    parseCodesFromFile(filePath).forEach((sequence) => {
+      byId.set(sequence.id, sequence);
+    });
+  });
+
+  return [...byId.values()].sort((a, b) => a.index - b.index);
 }
 
 function getSequences() {
