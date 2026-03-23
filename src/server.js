@@ -143,6 +143,68 @@ function getUserEntitlement(userId) {
   return { entitled: isEntitledStatus(status), status, profile };
 }
 
+function pickBestSubscription(subscriptions = []) {
+  if (!Array.isArray(subscriptions) || !subscriptions.length) return null;
+  const entitlementFirst = subscriptions.find((sub) => isEntitledStatus(sub?.status));
+  if (entitlementFirst) return entitlementFirst;
+  return subscriptions
+    .slice()
+    .sort((a, b) => Number(b?.created || 0) - Number(a?.created || 0))[0];
+}
+
+async function syncBillingProfileFromStripe(userId, checkoutSessionId = "") {
+  const stripe = getStripeClient();
+  if (!stripe) return { synced: false, reason: "stripe_not_configured" };
+
+  const profile = getOrCreateBillingProfile(userId);
+  let customerId = profile.stripeCustomerId || null;
+  const sessionId = String(checkoutSessionId || "").trim();
+
+  if (sessionId) {
+    const checkout = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["subscription"] });
+    const metadataUserId = String(checkout?.metadata?.userId || "").trim();
+    if (metadataUserId && metadataUserId !== userId) {
+      throw new Error("Checkout session does not belong to current user.");
+    }
+
+    const sessionCustomerId = typeof checkout?.customer === "string"
+      ? checkout.customer
+      : checkout?.customer?.id || null;
+    if (sessionCustomerId) {
+      customerId = sessionCustomerId;
+      withDb((db) => {
+        const target = db.billingProfiles.find((p) => p.userId === userId);
+        if (target) {
+          target.stripeCustomerId = customerId;
+          target.updatedAt = new Date().toISOString();
+        }
+      });
+    }
+
+    let subscription = checkout?.subscription || null;
+    if (typeof subscription === "string" && subscription) {
+      subscription = await stripe.subscriptions.retrieve(subscription);
+    }
+    if (subscription && subscription.id) {
+      upsertBillingProfileFromSubscription(subscription, userId, customerId);
+      return { synced: true, source: "checkout_session", subscriptionStatus: subscription.status };
+    }
+  }
+
+  if (!customerId) return { synced: false, reason: "no_customer" };
+
+  const listed = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "all",
+    limit: 10
+  });
+  const selected = pickBestSubscription(listed?.data || []);
+  if (!selected) return { synced: false, reason: "no_subscription" };
+
+  upsertBillingProfileFromSubscription(selected, userId, customerId);
+  return { synced: true, source: "customer_subscriptions", subscriptionStatus: selected.status };
+}
+
 function upsertBillingProfileFromSubscription(subscription, preferredUserId = null, preferredCustomerId = null) {
   const customerId = preferredCustomerId
     || (typeof subscription?.customer === "string" ? subscription.customer : subscription?.customer?.id || null);
@@ -400,7 +462,30 @@ function buildApp() {
     }
   });
 
-  app.get("/billing/entitlement", requireAuth, (req, res) => {
+  app.post("/billing/sync", requireAuth, async (req, res) => {
+    try {
+      const checkoutSessionId = String(req.body?.checkoutSessionId || "").trim();
+      const result = await syncBillingProfileFromStripe(req.user.sub, checkoutSessionId);
+      const entitlement = getUserEntitlement(req.user.sub);
+      return res.json({
+        ok: true,
+        synced: !!result?.synced,
+        source: result?.source || null,
+        subscriptionStatus: entitlement.status,
+        entitled: entitlement.entitled,
+        enforcementEnabled: isBillingEnforcementEnabled()
+      });
+    } catch (err) {
+      return res.status(500).json({ error: err.message || "Unable to sync billing status." });
+    }
+  });
+
+  app.get("/billing/entitlement", requireAuth, async (req, res) => {
+    try {
+      await syncBillingProfileFromStripe(req.user.sub);
+    } catch {
+      // Non-fatal: return last known local profile if sync fails.
+    }
     const entitlement = getUserEntitlement(req.user.sub);
     return res.json({
       entitled: entitlement.entitled,

@@ -1020,7 +1020,7 @@ async function startPlan(plan = "monthly") {
       method: "POST",
       body: JSON.stringify({
         plan,
-        successUrl: `${window.location.origin}?billing=success`,
+        successUrl: `${window.location.origin}?billing=success&session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${window.location.origin}?billing=cancel`
       })
     });
@@ -1028,6 +1028,49 @@ async function startPlan(plan = "monthly") {
     window.location.href = out.checkoutUrl;
   } catch (err) {
     setMsg($("authMsg"), err.message, true);
+  }
+}
+
+async function handleBillingReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const billing = String(params.get("billing") || "").trim().toLowerCase();
+  if (!billing) return null;
+
+  const clearParams = () => {
+    params.delete("billing");
+    params.delete("session_id");
+    params.delete("checkout_session_id");
+    const query = params.toString();
+    const next = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+    window.history.replaceState({}, "", next);
+  };
+
+  if (billing === "cancel") {
+    clearParams();
+    return { text: "Checkout canceled. Start your trial when you're ready.", isError: false };
+  }
+
+  if (billing !== "success") {
+    clearParams();
+    return null;
+  }
+
+  const sessionId = String(
+    params.get("session_id") || params.get("checkout_session_id") || ""
+  ).trim();
+  try {
+    await api("/billing/sync", {
+      method: "POST",
+      body: JSON.stringify({ checkoutSessionId: sessionId })
+    });
+    return { text: "Trial activated. You can now add a device.", isError: false };
+  } catch (err) {
+    return {
+      text: err.message || "We could not sync billing yet. Refresh or open Manage Billing.",
+      isError: true
+    };
+  } finally {
+    clearParams();
   }
 }
 
@@ -1103,7 +1146,11 @@ async function initClerk() {
       return;
     }
     showApp();
+    const billingFlash = await handleBillingReturn();
     await loadStatus();
+    if (billingFlash) {
+      setMsg($("appMsg"), billingFlash.text, !!billingFlash.isError);
+    }
   } catch (err) {
     setMsg($("authMsg"), err.message, true);
   }
