@@ -778,5 +778,5 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildApp, MIN_DURATION_MS, MAX_DURATION_MS };
+module.exports = buildApp();
 
