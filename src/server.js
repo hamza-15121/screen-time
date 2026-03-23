@@ -143,6 +143,15 @@ function getUserEntitlement(userId) {
   return { entitled: isEntitledStatus(status), status, profile };
 }
 
+function inferPlanFromPriceId(priceId) {
+  const id = String(priceId || "").trim();
+  if (!id) return "unknown";
+  const { priceId: monthlyPriceId, yearlyPriceId } = getStripeConfig();
+  if (id && monthlyPriceId && id === monthlyPriceId) return "monthly";
+  if (id && yearlyPriceId && id === yearlyPriceId) return "yearly";
+  return "unknown";
+}
+
 function pickBestSubscription(subscriptions = []) {
   if (!Array.isArray(subscriptions) || !subscriptions.length) return null;
   const entitlementFirst = subscriptions.find((sub) => isEntitledStatus(sub?.status));
@@ -490,11 +499,13 @@ function buildApp() {
     return res.json({
       entitled: entitlement.entitled,
       subscriptionStatus: entitlement.status,
+      plan: inferPlanFromPriceId(entitlement.profile?.priceId),
       enforcementEnabled: isBillingEnforcementEnabled(),
       profile: entitlement.profile
         ? {
           stripeCustomerId: entitlement.profile.stripeCustomerId || null,
           subscriptionId: entitlement.profile.subscriptionId || null,
+          priceId: entitlement.profile.priceId || null,
           currentPeriodEnd: entitlement.profile.currentPeriodEnd || null,
           trialEndsAt: entitlement.profile.trialEndsAt || null
         }

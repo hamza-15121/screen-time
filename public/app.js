@@ -36,7 +36,9 @@ const state = {
   revealedCodeById: "",
   billingEntitled: false,
   billingEnforcementEnabled: true,
-  billingSubscriptionStatus: "inactive"
+  billingSubscriptionStatus: "inactive",
+  billingPlan: "unknown",
+  billingHasSubscription: false
 };
 
 const phaseMeta = {
@@ -594,6 +596,10 @@ function renderDashboard() {
   const archived = locks.filter((l) => l.status === "revealed");
   const allowAddDevice = canCreateDevice();
   const addDeviceButton = allowAddDevice ? `<button id="addDeviceBtn">Add Another Device</button>` : "";
+  const isMonthlyPlan = state.billingPlan === "monthly";
+  const hasBillingStarted = state.billingHasSubscription || state.billingSubscriptionStatus !== "inactive";
+  const showTrialButtons = !allowAddDevice && !hasBillingStarted;
+  const showYearlyUpgrade = allowAddDevice && isMonthlyPlan;
   const trialGateNotice = allowAddDevice
     ? ""
     : `<p class="warn">Start your 3-day trial first to add a device and create a new Screen Time block.</p>`;
@@ -643,13 +649,15 @@ function renderDashboard() {
     ${trialGateNotice}
     <div class="row dashboard-actions">
       ${addDeviceButton}
-      <button id="startMonthlyBtn">Start 3-Day Trial ($4.99/mo)</button>
-      <button id="startYearlyBtn" class="ghost">Start 3-Day Trial ($39.99/year)</button>
+      ${showTrialButtons ? `<button id="startMonthlyBtn">Start 3-Day Trial ($4.99/mo)</button>` : ""}
+      ${showTrialButtons ? `<button id="startYearlyBtn" class="ghost">Start 3-Day Trial ($39.99/year)</button>` : ""}
+      ${showYearlyUpgrade ? `<button id="upgradeYearlyBtn" class="ghost">Upgrade to Yearly ($39.99/year)</button>` : ""}
     </div>
   `;
   if ($("addDeviceBtn")) $("addDeviceBtn").onclick = addAnotherDevice;
-  $("startMonthlyBtn").onclick = () => startPlan("monthly");
-  $("startYearlyBtn").onclick = () => startPlan("yearly");
+  if ($("startMonthlyBtn")) $("startMonthlyBtn").onclick = () => startPlan("monthly");
+  if ($("startYearlyBtn")) $("startYearlyBtn").onclick = () => startPlan("yearly");
+  if ($("upgradeYearlyBtn")) $("upgradeYearlyBtn").onclick = () => startPlan("yearly");
   document.querySelectorAll(".open-device-btn").forEach((btn) => {
     btn.onclick = () => openDeviceDetail(btn.dataset.lockId);
   });
@@ -909,10 +917,14 @@ async function loadStatus() {
       state.billingEntitled = !!entitlement?.entitled;
       state.billingEnforcementEnabled = !!entitlement?.enforcementEnabled;
       state.billingSubscriptionStatus = String(entitlement?.subscriptionStatus || "inactive");
+      state.billingPlan = String(entitlement?.plan || "unknown");
+      state.billingHasSubscription = !!entitlement?.profile?.subscriptionId;
     } catch {
       state.billingEntitled = false;
       state.billingEnforcementEnabled = true;
       state.billingSubscriptionStatus = "unknown";
+      state.billingPlan = "unknown";
+      state.billingHasSubscription = false;
     }
 
     const out = await api("/lock/status");
